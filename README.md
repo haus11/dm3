@@ -16,6 +16,7 @@ Hier kommt nun Synergy ins Spiel. Synergy ist ein interaktiver Globus welcher gl
 ## Nutzungsszenarien
 
 - Markieren / Einzeichnen von Flüssen
+- Darstellung von Klimazonen
 - Darstellung von Erdschichten
 - Darstellung von Atmosphäre
 - Darstellung von Wasser / Strömen
