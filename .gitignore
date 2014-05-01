@@ -1,2 +1,8 @@
-/prototype/nbproject/private/
-nbproject
+prototype/nbproject/
+prototype/node_modules/
+prototype/client/node_modules/
+prototype/client/app/bower_components/
+prototype/client/app/scripts/dist/
+sublime/
+nbproject/
+.DS_Store
