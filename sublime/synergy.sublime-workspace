@@ -7,6 +7,7 @@
 	},
 	"buffers":
 	[
+<<<<<<< HEAD
 		{
 			"file": "/home/david/FHErfurt/Digitale Medien 3/Synergy/prototype/client/app/scripts/src/main.js",
 			"settings":
@@ -23,6 +24,8 @@
 				"line_ending": "Unix"
 			}
 		}
+=======
+>>>>>>> 87499d317475b4db72e3d371e4006dd6c0e29510
 	],
 	"build_system": "",
 	"command_palette":
@@ -48,11 +51,19 @@
 	},
 	"file_history":
 	[
+<<<<<<< HEAD
 		"/home/david/httpd/htdocs/RescueMap/assets/js/RescueMapWMS.js",
 		"/etc/network/interfaces",
 		"/etc/apache2/envvars",
 		"/usr/share/applications/sublime.desktop",
 		"/home/david/.config/sublime-text-2/Packages/User/Preferences.sublime-settings"
+=======
+		"/home/david/.config/sublime-text-2/Packages/User/Preferences.sublime-settings",
+		"/home/david/httpd/htdocs/RescueMap/assets/js/RescueMapWMS.js",
+		"/etc/network/interfaces",
+		"/etc/apache2/envvars",
+		"/usr/share/applications/sublime.desktop"
+>>>>>>> 87499d317475b4db72e3d371e4006dd6c0e29510
 	],
 	"find":
 	{
@@ -91,6 +102,7 @@
 	"groups":
 	[
 		{
+<<<<<<< HEAD
 			"selected": 1,
 			"sheets":
 			[
@@ -534,6 +546,10 @@
 					},
 					"type": "text"
 				}
+=======
+			"sheets":
+			[
+>>>>>>> 87499d317475b4db72e3d371e4006dd6c0e29510
 			]
 		}
 	],
@@ -593,6 +609,10 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
+<<<<<<< HEAD
 	"side_bar_width": 223.0,
+=======
+	"side_bar_width": 237.0,
+>>>>>>> 87499d317475b4db72e3d371e4006dd6c0e29510
 	"status_bar_visible": true
 }
