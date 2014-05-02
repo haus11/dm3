@@ -1,8 +1,8 @@
-/* globals Cesium, CesiumWorld, window*/
+/* globals Cesium, CesiumWorld, window */
 
 /**
 * Export for require statemant
-*/ 
+*/
 module.exports = CesiumWorld;
 
 
@@ -29,98 +29,153 @@ function CesiumWorld(_speechRecognition, _speechSynthesis) {
              tooltip : 'The lights of cities and villages trace the outlines of civilization in this global view of the Earth at night as seen by NASA/NOAA\'s Suomi NPP satellite.',
              creationFunction : function() {
                  return new Cesium.TileMapServiceImageryProvider({
-                     url : 'http://cesiumjs.org/blackmarble',
+                     url : 'https://cesiumjs.org/blackmarble',
                      maximumLevel : 8,
                      credit : 'Black Marble imagery courtesy NASA Earth Observatory'
                  });
              }
          }));
-         
+
          this.providerViewModels.push(new Cesium.ImageryProviderViewModel({
              name : 'Bing',
              iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/bingAerial.png'),
              tooltip : 'The lights of cities and villages trace the outlines of civilization in this global view of the Earth at night as seen by NASA/NOAA\'s Suomi NPP satellite.',
              creationFunction : function() {
                  return new Cesium.BingMapsImageryProvider({
-                    url : 'http://dev.virtualearth.net',
+                    url : 'https://dev.virtualearth.net',
                     mapStyle : Cesium.BingMapsStyle.AERIAL
                 });
              }
          }));
-        
+
         var _this = this;
 
-        this.widget = new Cesium.CesiumWidget('cesiumContainer', {'imageryProvider': false});
+        this.widget = new Cesium.CesiumWidget('cesiumContainer', {
+            'imageryProvider': false,
+            skyBox : new Cesium.SkyBox({
+                sources : {
+                  positiveX : 'textures/SkyBox/TychoSkymapII.t3_08192x04096_80_px.jpg',
+                  negativeX : 'textures/SkyBox/TychoSkymapII.t3_08192x04096_80_mx.jpg',
+                  positiveY : 'textures/SkyBox/TychoSkymapII.t3_08192x04096_80_py.jpg',
+                  negativeY : 'textures/SkyBox/TychoSkymapII.t3_08192x04096_80_my.jpg',
+                  positiveZ : 'textures/SkyBox/TychoSkymapII.t3_08192x04096_80_pz.jpg',
+                  negativeZ : 'textures/SkyBox/TychoSkymapII.t3_08192x04096_80_mz.jpg'
+                }
+            }),
+            useDefaultRenderLoop: false
+        });
         this.layers = this.widget.centralBody.imageryLayers;
         this.baseLayerPicker = new Cesium.BaseLayerPicker('baseLayerContainer', this.layers, this.providerViewModels);
         this.baseLayerPicker.viewModel.selectedItem = this.providerViewModels[2];
         this.geoCoder = new Cesium.Geocoder({'container' : 'cesiumGeocoder', 'scene' : this.widget.scene});
         this.ellipsoid = this.widget.centralBody.ellipsoid;
+        this.centralBody = this.widget.centralBody;
+        this.centralBody.depthTestAgainstTerrain = true;
+
+        this.cesiumTerrainProviderMeshes = new Cesium.CesiumTerrainProvider({
+            url : 'http://cesiumjs.org/stk-terrain/tilesets/world/tiles',
+            credit : 'Terrain data courtesy Analytical Graphics, Inc.'
+        });
+        this.defaultTerrainProvider = this.centralBody.terrainProvider;
+
         this.speechRecognition = _speechRecognition;
         this.speechSynthesis = _speechSynthesis;
-        
+
         this.speechRecognition.on('navigateTo', function(event)
         {
-            console.log(event.action);
+            //console.log(event.action);
             _this.flyTo(event.action);
         });
-        
+
         this.speechRecognition.on('selectLayer', function(event)
         {
-            console.log(event.action);
+            //console.log(event.action);
             _this.changeLayer(event.action);
         });
-        
+
         this.speechRecognition.on('moveForward', function(event)
         {
             console.log(event);
-            _this.move('forward');
+            _this.move('forward', event.action);
         });
-        
+
         this.speechRecognition.on('moveBackward', function(event)
         {
             console.log(event);
             _this.move('backward');
         });
-        
+
         this.speechRecognition.on('moveUp', function(event)
         {
             console.log(event);
             _this.move('up');
         });
-        
+
         this.speechRecognition.on('moveDown', function(event)
         {
             console.log(event);
             _this.move('down');
         });
-        
+
         this.speechRecognition.on('moveLeft', function(event)
         {
             console.log(event);
             _this.move('left');
         });
-        
+
         this.speechRecognition.on('moveRight', function(event)
         {
             console.log(event);
             _this.move('right');
         });
-        
-        this.speechRecognition.on('gnhi', function(event)
+
+        this.speechRecognition.on('setTerrain', function(event)
         {
-            console.log(event);
-            _this.geoCoder.viewModel.searchText = 'Odessa, Ukraine';
-            _this.geoCoder.viewModel.search();
+            if(event.action === 'einschalten')
+            {
+                _this.setTerrain(true);
+            }
+            else if(event.action === 'ausschalten')
+            {
+                _this.setTerrain(false);
+            }
+            
         });
-        
+
         this.init();
 }
 
-CesiumWorld.prototype.move = function(_direction) {
+CesiumWorld.prototype.setTerrain = function(_state)
+{
+    if(_state)
+    {
+        this.centralBody.terrainProvider = this.cesiumTerrainProviderMeshes;
+        this.speechSynthesis.answer('setTerrain', true, 'eingeschaltet');
+    }
+    else
+    {
+        this.centralBody.terrainProvider = this.defaultTerrainProvider;
+        this.speechSynthesis.answer('setTerrain', true, 'ausgeschaltet');
+    }  
+};
+
+CesiumWorld.prototype.move = function(_direction, _factor) {
+
+/*
+    console.log(_factor);
+    if(_factor === '')
+    {
+        _factor = 1.2;
+    }
+    else if(_factor === '2')
+    {
+        console.log('two detected');
+        _factor = 1.0;
+    }*/
     
-    var moveRate = this.ellipsoid.cartesianToCartographic(this.widget.scene.camera.position).height / 1.2;
-    
+    _factor = 1.2;
+    var moveRate = this.ellipsoid.cartesianToCartographic(this.widget.scene.camera.position).height / _factor;
+
     switch(_direction)
     {
         case 'forward':
@@ -164,20 +219,20 @@ CesiumWorld.prototype.move = function(_direction) {
 
 
 CesiumWorld.prototype.init = function() {
-   console.log(this.geoCoder.viewModel.search);
-   console.log(this.widget.length);
-   console.log(this.geoCoder);
+   //console.log(this.geoCoder.viewModel.search);
+   //console.log(this.geoCoder);
+    this.widget.resize();
 };
 
 CesiumWorld.prototype.flyTo = function(_location) {
-    
+
     this.geoCoder.viewModel.searchText = _location;
     this.geoCoder.viewModel.search();
-    
+
     var _this = this;
-    
+
     window.setTimeout(function(){
-        
+
         var searchResult = _this.geoCoder.viewModel.searchText;
 
         if(searchResult.indexOf('(not found)') !== -1) {
@@ -188,7 +243,7 @@ CesiumWorld.prototype.flyTo = function(_location) {
         {
             _this.speechSynthesis.answer('navigateTo', true, _location);
         }
-        
+
     }, 1000);
 };
 
@@ -202,11 +257,11 @@ CesiumWorld.prototype.changeLayer = function(_layer) {
             return;
         }
     }
-    
+
     this.speechSynthesis.answer('selectLayer', false, _layer);
 };
 
 
 CesiumWorld.prototype.update = function() {
-	
+    this.widget.render();
 };
