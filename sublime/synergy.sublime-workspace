@@ -115,7 +115,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 602.0
+		"width": 449.0
 	},
 	"console":
 	{
@@ -132,6 +132,7 @@
 	},
 	"file_history":
 	[
+		"/home/david/FHErfurt/Digitale Medien 3/dm3/sublime/synergy.sublime-workspace",
 		"/home/david/FHErfurt/Digitale Medien 3/dm3/prototype/client/app/scripts/src/leapConnector.js",
 		"/home/david/FHErfurt/Digitale Medien 3/dm3/prototype/client/app/styles/main.less",
 		"/home/david/FHErfurt/Digitale Medien 3/dm3/prototype/client/app/styles/css/main.css",
@@ -192,7 +193,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 4,
 			"sheets":
 			[
 				{
@@ -411,7 +412,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 456.0,
+						"translation.y": 190.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -649,8 +650,8 @@
 						"selection":
 						[
 							[
-								2380,
-								2380
+								2080,
+								2080
 							]
 						],
 						"settings":
@@ -1090,8 +1091,8 @@
 						"selection":
 						[
 							[
-								284,
-								284
+								466,
+								466
 							]
 						],
 						"settings":
@@ -1748,8 +1749,8 @@
 						"selection":
 						[
 							[
-								1323,
-								1323
+								428,
+								428
 							]
 						],
 						"settings":
@@ -1950,7 +1951,7 @@
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 285.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
