@@ -333,7 +333,9 @@ THREE.LeapCameraControls = function(camera, ellipsoid) {
             _this.camera.moveBackward(moveRate);
         }
     }
-      
+
+
+
       /*
       var t = new THREE.Vector3().subVectors(_this.camera.position, _this.target);
       var lengthDelta = _this.zoomTransform(zDelta);
