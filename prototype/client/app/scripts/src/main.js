@@ -8,7 +8,7 @@ var SpeechRecognition = require('./speechRecognition.js');
 var SpeechSynthesis   = require('./speechSynthesis.js');
 var Ui                = require('./Ui.js');
 
-console.log(Ui);
+//console.log(Ui);
 
 // Create a basic leap connection
 var leapConnection    = new LeapConnector();
@@ -19,21 +19,30 @@ var cameraControls    = new THREE.LeapCameraControls(cesiumWorld.widget.scene.ca
 var ui                = new Ui();
 
 speechRecognition.on('thanks', function(){
-    speechSynthesis.answer('thanks', true);
+    speechSynthesis.answer('thanks', {'state': true});
+});
+
+speechRecognition.on('test', function(){
+    speechSynthesis.answer('test', {'state': true});
 });
 
 speechRecognition.on('flightMode', function() {
 
 	cameraControls.mode = 'flight';
 
-	speechSynthesis.answer('flightMode', true);
+	speechSynthesis.answer('flightMode', {'state': true});
 });
 
-speechRecognition.on('standartMode', function() {
+speechRecognition.on('standardMode', function() {
 
 	cameraControls.mode = 'standard';
 
-	speechSynthesis.answer('standartMode', true);
+	speechSynthesis.answer('standardMode', {'state': true});
+});
+
+cesiumWorld.on('flyToFlag', function() {
+        console.log('Aufruf');
+	cameraControls.flyToFlag = true;
 });
 
 // Ui stuff
