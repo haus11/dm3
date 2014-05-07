@@ -1,4 +1,4 @@
-/* globals Cesium, CesiumWorld, window, $ */
+/* globals Cesium, CesiumWorld, window, $, navigator */
 
 /**
 * Export for require statemant
@@ -10,7 +10,7 @@ module.exports = CesiumWorld;
 * Constructor
 */
 function CesiumWorld(_speechRecognition, _speechSynthesis) {
-
+        
         this.providerViewModels = [];
         this.providerViewModels.push(new Cesium.ImageryProviderViewModel({
              name : 'OpenStreetMap',
@@ -49,7 +49,7 @@ function CesiumWorld(_speechRecognition, _speechSynthesis) {
          }));
 
         var _this = this;
-
+      
         this.widget = new Cesium.CesiumWidget('cesiumContainer', {
             'imageryProvider': false,
             skyBox : new Cesium.SkyBox({
@@ -71,7 +71,10 @@ function CesiumWorld(_speechRecognition, _speechSynthesis) {
         this.ellipsoid = this.widget.centralBody.ellipsoid;
         this.centralBody = this.widget.centralBody;
         this.centralBody.depthTestAgainstTerrain = true;
-
+      
+    
+        this.widget.scene.camera.rotateRight (1.7453292519943295);
+          
         this.cesiumTerrainProviderMeshes = new Cesium.CesiumTerrainProvider({
             url : 'http://cesiumjs.org/stk-terrain/tilesets/world/tiles',
             credit : 'Terrain data courtesy Analytical Graphics, Inc.'
@@ -153,6 +156,7 @@ function CesiumWorld(_speechRecognition, _speechSynthesis) {
         this.init();
 }
 
+
 CesiumWorld.prototype.setTerrain = function(_state)
 {
     if(_state)
@@ -195,37 +199,37 @@ CesiumWorld.prototype.move = function(_direction, _factor) {
         case 'forward':
         {
             this.widget.scene.camera.moveForward(moveRate);
-            this.speechSynthesis.answer('moveForward', {'state': true});
+            //this.speechSynthesis.answer('moveForward', {'state': true});
             break;
         }
         case 'backward':
         {
             this.widget.scene.camera.moveBackward(moveRate);
-            this.speechSynthesis.answer('moveBackward', {'state': true});
+            //this.speechSynthesis.answer('moveBackward', {'state': true});
             break;
         }
         case 'up':
         {
             this.widget.scene.camera.moveUp(moveRate);
-            this.speechSynthesis.answer('moveUp', {'state': true});
+            //this.speechSynthesis.answer('moveUp', {'state': true});
             break;
         }
         case 'down':
         {
             this.widget.scene.camera.moveDown(moveRate);
-            this.speechSynthesis.answer('moveDown', {'state': true});
+            //this.speechSynthesis.answer('moveDown', {'state': true});
             break;
         }
         case 'left':
         {
             this.widget.scene.camera.moveLeft(moveRate);
-            this.speechSynthesis.answer('moveLeft', {'state': true});
+            //this.speechSynthesis.answer('moveLeft', {'state': true});
             break;
         }
         case 'right':
         {
             this.widget.scene.camera.moveRight(moveRate);
-            this.speechSynthesis.answer('moveRight', {'state': true});
+            //this.speechSynthesis.answer('moveRight', {'state': true});
             break;
         }
     }
@@ -238,7 +242,49 @@ CesiumWorld.prototype.init = function() {
     this.widget.resize();
 };
 
+CesiumWorld.prototype.flyToMyLocation = function() 
+{
+    var _this = this;
+    
+/*
+        var camera = this.widget.scene.camera;
+        if (camera.transform.equals(Cesium.Matrix4.IDENTITY)) {
+            return;
+        }
+
+        Cesium.Matrix4.clone(Cesium.Matrix4.IDENTITY, camera.transform);
+        camera.constrainedAxis = undefined;
+        camera.lookAt(
+                Cesium.Cartesian3.multiplyByScalar(Cesium.Cartesian3.normalize(new Cesium.Cartesian3(0.0, -2.0, 1.0)), 2.0 * this.ellipsoid.maximumRadius),
+                Cesium.Cartesian3.ZERO,
+                Cesium.Cartesian3.UNIT_Z);
+
+        var controller = this.widget.scene.screenSpaceCameraController;
+        controller.ellipsoid = this.ellipsoid;
+        controller.enableTilt = true;
+        */
+        function fly(position) 
+        {
+            var destination = Cesium.Cartographic.fromDegrees(position.coords.longitude, position.coords.latitude, 1000.0);
+            destination = _this.ellipsoid.cartographicToCartesian(destination);
+
+            var flight = Cesium.CameraFlightPath.createAnimation(_this.widget.scene, {
+                destination : destination
+            });
+            _this.widget.scene.animations.add(flight);
+            _this.speechSynthesis.speak('Ich habe dich gefunden.');
+        }
+
+        navigator.geolocation.getCurrentPosition(fly);
+};
+
 CesiumWorld.prototype.flyTo = function(_location) {
+    
+    if(_location.toLowerCase() === 'mich')
+    {
+        this.flyToMyLocation();
+        return;
+    }
 
     this.geoCoder.viewModel.searchText = _location;
     this.geoCoder.viewModel.search();
@@ -258,12 +304,15 @@ CesiumWorld.prototype.flyTo = function(_location) {
         }
         else
         {
+            _this.speechSynthesis.answer('navigateTo', true, _location);
+
             _this.speechSynthesis.answer('navigateTo', {
                 'state' : true,
                 'replace' : _location
             });
             
             _this.lastLocation = _location;
+
         }
 
     }, 1000);
